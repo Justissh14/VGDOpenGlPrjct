@@ -5,6 +5,7 @@
 #include <thread>
 
 Player::Player() {
+
 	mTimer = Timer::Instance();
 	mInput = InputManager::Instance();
 	mAudio = AudioManager::Instance();
@@ -13,23 +14,21 @@ Player::Player() {
 	mAnimating = false;
 	mWasHit = false;
 
-
 	mScore = 0;
-	mLives = 2;
+	mLives = 1;
 
-	mTexture = new GLTexture("JetPackMan.png", 0, 0, 60, 65);
-	mTexture->Parent(this);
-	mTexture->Position(-200.0f, -295.0f);
-	mTexture->Scale(Vector2(2.5f, 3.0f));
+	mTexturej = new GLTexture("JetPackMan.png", -45, 5, 35, 55);
+	mTexturej->Parent(this);
+	mTexturej->Position(Vector2(-200.0f, -280.0f));
+	mTexturej->Scale(Vector2(2.5f, 3.0f));
 
 	mMoveSpeed = 500.0f;
-	mMoveBoundsX = Vector2(0.0f + mTexture->ScaledDimensions().x / 2, Graphics::SCREEN_WIDTH - mTexture->ScaledDimensions().x / 2);
-	mMoveBoundsY = Vector2(0.0f + mTexture->ScaledDimensions().y / 2, maxY - mTexture->ScaledDimensions().y / 2);
-
+	mMoveBoundsX = Vector2(0.0f + mTexturej->ScaledDimensions().x / 2, Graphics::SCREEN_WIDTH - mTexturej->ScaledDimensions().x / 2);
+	mMoveBoundsY = Vector2(0.0f + mTexturej->ScaledDimensions().y / 2, maxY - mTexturej->ScaledDimensions().y / 2);
 
 	mDeathAnimation = new AnimatedGLTexture("PlayerExplosion.png", 0, 0, 128, 128, 4, 1.0f, Animation::Layouts::Horizontal);
 	mDeathAnimation->Parent(this);
-	mDeathAnimation->Position(Vec2_Zero);
+	mDeathAnimation->Position(Vector2(-200.0f, -295.0f));
 	mDeathAnimation->SetWrapMode(Animation::WrapModes::Once);
 
 	for (int i = 0; i < MAX_BULLETS; ++i) {
@@ -42,7 +41,8 @@ Player::Player() {
 
 	mId = PhysicsManager::Instance()->RegisterEntity(this, PhysicsManager::CollisionLayers::Friendly);
 
-	
+
+
 }
 
 Player::~Player() {
@@ -50,8 +50,12 @@ Player::~Player() {
 	mInput = nullptr;
 	mAudio = nullptr;
 
-	delete mTexture;
-	mTexture = nullptr;
+	delete mTexturej;
+	mTexturej = nullptr;
+
+	delete mJetFlames;
+	mJetFlames = nullptr;
+
 
 	delete mDeathAnimation;
 	mDeathAnimation = nullptr;
@@ -60,37 +64,44 @@ Player::~Player() {
 		delete b;
 	}
 }
- 
+
 
 
 void Player::HandleMovement() {
-	
-	
 
-	// Handle vertical movement (jumping)
-	
 	if (mInput->KeyPressed(SDL_SCANCODE_SPACE)) {
-		Translate(-Vec2_Up * 150.0f, World); // Jump up by 50 pixels
+		Translate(-Vec2_Up * 150.0f, World); // Jump 
 
 		if (mInput->KeyPressed(SDL_SCANCODE_SPACE)) {
 			mAudio->PlayMusic("SFX/JetPack.mp3", -1);
+			mJetFlames = new GLTexture("JetFlames.png", 0, 0, 60, 45);
+			mJetFlames->Parent(this);
+			mJetFlames->Position(-225.0f, -170.0f);
+			mJetFlames->Scale(Vector2(0.5f, 2.0f));
+
+
+
 		}
-		
-		
-		
+
+
+
 	}
 	if (mInput->KeyReleased(SDL_SCANCODE_SPACE)) {
-		Translate(Vec2_Up * 150.0f, World); // Fall down by 10 pixels
+		Translate(Vec2_Up * 150.0f, World); // Fall 
 		mAudio->PauseMusic();
+		delete mJetFlames;
+		mJetFlames = nullptr;
 	}
-	
-	
+
+
+
+
 
 	// Handle special action
 	if (mInput->KeyPressed(SDL_SCANCODE_X)) {
 		mAnimating = true;
 		mDeathAnimation->ResetAnimation();
-		// mAudio->PlaySFX("SFX/PlayerExplosion.wav");
+		mAudio->PlaySFX("SFX/PlayerDeath.mp3", 0, 1);
 		mWasHit = true;
 	}
 
@@ -132,9 +143,6 @@ void Player::HandleMovement() {
 //	}
 //}
 
-//void Player::Visible(bool visible) {
-//	mVisible = visible;
-//}
 
 bool Player::IsAnimating() {
 	return mAnimating;
@@ -158,16 +166,17 @@ bool Player::IgnoreCollisions()
 	return !mVisible || mAnimating;
 }
 
-void Player::Hit(PhysEntity * other) {
-	mLives -= 1;
+void Player::Hit(PhysEntity* other) {
+	/*mLives -= 1;*/
 	mAnimating = true;
 	mDeathAnimation->ResetAnimation();
-	mAudio->PlaySFX("SFX/PlayerExplosion.wav");
+	mAudio->PlaySFX("SFX/PlayerDeath.mp3", 0, 1);
 	mWasHit = true;
 }
 
 bool Player::WasHit() {
 	return mWasHit;
+	std::cerr << "Collision detected! " << std::endl;
 }
 
 void Player::Update() {
@@ -187,20 +196,26 @@ void Player::Update() {
 		}
 	}
 
-	for (int i = 0; i < MAX_BULLETS; ++i) {
+	/*for (int i = 0; i < MAX_BULLETS; ++i) {
 		mBullets[i]->Update();
-	}
+	}*/
 }
 
 void Player::Render() {
+
 	if (mVisible) {
 		if (mAnimating) {
 			mDeathAnimation->Render();
 		}
 		else {
-			mTexture->Render();
+			mTexturej->Render();
+
 		}
 	}
+	if (mJetFlames) {
+		mJetFlames->Render();
+	}
+
 
 	for (int i = 0; i < MAX_BULLETS; ++i) {
 		mBullets[i]->Render();
@@ -208,3 +223,4 @@ void Player::Render() {
 
 	PhysEntity::Render();
 }
+

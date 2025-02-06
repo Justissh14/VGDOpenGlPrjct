@@ -27,15 +27,18 @@ namespace SDLFramework {
 		ScreenManager * mScreenManager;
 
 	public:
+
 		static GameManager * Instance();
 		static void Release();
 
 		void Run();
+		void Quit();
 
 		void Update();
 		void LateUpdate();
 
 		void Render();
+		
 
 		GameManager();
 		~GameManager();

@@ -56,6 +56,9 @@ namespace SDLFramework {
 		mScreenManager->Render();
 		mGraphics->Render();
 	}
+	void GameManager::Quit() {
+		mQuit = true;
+	}
 
 	GameManager::GameManager() : mQuit(false), mEvent(SDL_Event()) {
 		Graphics::SetMode(Graphics::RenderMode::GL);

@@ -4,6 +4,7 @@
 #include "InputManager.h"
 #include "StartScreen.h"
 #include "Background.h"
+#include "Obstacle.h"
 
 using namespace SDLFramework;
 
@@ -15,12 +16,12 @@ private:
 	
 
 	Player * mPlayer;
-	Background* mBackground;
+	Background * mBackground;
+	Obstacle* mObstacle;
 	
 
 
-	/*Texture* mHiScore;
-	GameEntity* mTopBar;*/
+	
 
 public:
 	PlayScreen();

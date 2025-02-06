@@ -13,11 +13,11 @@ StartScreen::StartScreen() {
 	// top bar entities
 	mTopBar = new GameEntity(Graphics::SCREEN_WIDTH * 0.5f, 80.0f);
 	
-	mGameTitle = new GLTexture("Jet-Pack Runner", "emulogic.ttf", 58, { 0, 0, 0 });
-	mGameTitle2 = new GLTexture("(SPACE)", "emulogic.ttf", 60, { 0, 0, 0 });
-	mPlayerOne = new GLTexture("Current:", "emulogic.ttf", 28, { 0, 0, 0 });
+	mGameTitle = new GLTexture("Jet-Pack Runner", "Wedgie Regular.ttf", 58, { 0, 0, 0 });
+	mGameTitle2 = new GLTexture("SPACE", "Wedgie Regular.ttf", 80, { 0, 0, 0 });
+	mPlayerOne = new GLTexture("Current:", "Wedgie Regular.ttf", 28, { 0, 0, 0 });
 	/*mPlayerTwo = new GLTexture("2UP", "emulogic.ttf", 32, { 200, 0, 0 });*/
-	mHiScore = new GLTexture("HI SCORE:", "emulogic.ttf", 30, { 0, 0, 0 });
+	mHiScore = new GLTexture("HI SCORE:", "Wedgie Regular.ttf", 30, { 0, 0, 0 });
 	mPlayerOneScore = new Scoreboard();
 	/*mPlayerTwoScore = new Scoreboard();*/
 	mTopScore = new Scoreboard();
@@ -60,8 +60,8 @@ StartScreen::StartScreen() {
 
 	// play mode entities
 	mPlayModes = new GameEntity(Graphics::SCREEN_WIDTH * 0.5f, Graphics::SCREEN_HEIGHT * 0.55f);
-	mStartGameMode = new GLTexture("Start ", "emulogic.ttf", 32, { 0, 0, 0 });
-	mCreditMode = new GLTexture("Credits", "emulogic.ttf", 32, { 0, 0, 0 });
+	mStartGameMode = new GLTexture("Start ", "Wedgie Regular.ttf", 35, { 0, 0, 0 });
+	mCreditMode = new GLTexture("Credits", "Wedgie Regular.ttf", 32, { 0, 0, 0 });
 	mCursor = new GLTexture("Cursor.png");
 
 	mPlayModes->Parent(this);
@@ -81,9 +81,9 @@ StartScreen::StartScreen() {
 
 	// bottom bar entities
 	mBottomBar = new GameEntity(Graphics::SCREEN_WIDTH * 0.5f, Graphics::SCREEN_HEIGHT * 0.7f);
-	mVersion = new GLTexture(" v1.0 ", "namco__.ttf", 40, { 100, 100, 100 });
-	mInfo = new GLTexture("Early Demo.", "emulogic.ttf", 32, { 230, 230, 230 });
-	mRights = new GLTexture("ALL RIGHTS RESERVED", "emulogic.ttf", 32, { 230, 230, 230 });
+	mVersion = new GLTexture(" v1.0 ", "Wedgie Regular.ttf", 40, { 0, 0, 0 });
+	mInfo = new GLTexture("Early Demo.", "Wedgie Regular.ttf", 32, { 0, 0, 0 });
+	mRights = new GLTexture("ALL RIGHTS RESERVED", "Wedgie Regular.ttf", 32, { 0, 0, 0 });
 
 	mBottomBar->Parent(this);
 	mVersion->Parent(mBottomBar);

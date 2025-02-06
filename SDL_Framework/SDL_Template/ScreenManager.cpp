@@ -1,5 +1,6 @@
  #include "ScreenManager.h"
 
+
 ScreenManager * ScreenManager::sInstance = nullptr;
 
 ScreenManager * ScreenManager::Instance() {
@@ -24,12 +25,14 @@ void ScreenManager::Update() {
 		if (mInput->KeyPressed(SDL_SCANCODE_RETURN)) {
 			mCurrentScreen = Play;
 			mStartScreen->ResetAnimation();
+			
 		}
 		break;
 	case Play:
 		mPlayScreen->Update();
 		if (mInput->KeyPressed(SDL_SCANCODE_ESCAPE)) {
 			mCurrentScreen = Start;
+
 		}
 		break;
 	}

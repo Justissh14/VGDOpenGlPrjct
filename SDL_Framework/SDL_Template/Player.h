@@ -21,7 +21,8 @@ private:
 	int mScore;
 	int mLives;
 
-	Texture * mTexture;
+	Texture * mTexturej;
+	Texture* mJetFlames;
 	AnimatedGLTexture * mDeathAnimation;
 
 	float mMoveSpeed;
@@ -45,7 +46,9 @@ public:
 	Player();
 	~Player();
 
-	/*void Visible(bool visible);*/
+	bool Visible();
+
+	void Visible(bool visible);
 	bool IsAnimating();
 	
 	int Score();

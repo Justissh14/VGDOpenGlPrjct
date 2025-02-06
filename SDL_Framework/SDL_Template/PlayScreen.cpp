@@ -19,10 +19,15 @@ PlayScreen::PlayScreen() {
 	mBackground->Parent(this);
 	mBackground->Position(Graphics::SCREEN_WIDTH * 0.5f, Graphics::SCREEN_HEIGHT * 0.7f);
 
+	mObstacle = new Obstacle();
+	mObstacle->Parent(this);
+	mObstacle->Position(Graphics::SCREEN_WIDTH * 0.5f, Graphics::SCREEN_HEIGHT * 0.7f);
+
+
 	
  
 	//game audio
-	mAudio->PlaySFX("Music/level2.mp3", -1);
+	mAudio->PlaySFX("SFX/8-BitMoonlightSonata.mp3", -1);
 
 }
 
@@ -32,10 +37,7 @@ PlayScreen::~PlayScreen() {
 	mAudio = nullptr;
 	mInput = nullptr;
 	
-	/*delete mHiScore;
-	mHiScore = nullptr;*/
-	/*delete mTopBar;
-	mTopBar = nullptr;*/
+	
 
 	delete mPlayer;
 	mPlayer = nullptr;
@@ -43,16 +45,27 @@ PlayScreen::~PlayScreen() {
 	delete mBackground;
 	mBackground = nullptr;
 
+	delete mObstacle;
+	mObstacle = nullptr;
+
+	
+
 	
 }
 
 void PlayScreen::Update() {
 	mPlayer->Update();
+	mObstacle->Update();
 	mBackground->Update();
+	
 }
 
 void PlayScreen::Render() {
-	mPlayer->Render();
-	/*mHiScore->Render();*/
 	mBackground->Render();
+	mObstacle->Render();
+	mPlayer->Render();
+
+	
+	
+	
 }
