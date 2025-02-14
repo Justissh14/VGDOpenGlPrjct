@@ -5,6 +5,7 @@ void BoxCollider::AddVert(int index, Vector2 pos) {
 	mVerts[index]->Parent(this);
 }
 
+
 BoxCollider::BoxCollider(Vector2 size)
 	: Collider(ColliderType::Box) {
 	AddVert(0, Vector2(-0.5f*size.x,-0.5f*size.y));
@@ -23,6 +24,8 @@ BoxCollider::~BoxCollider() {
 		delete v;
 	}
 }
+
+
 
 Vector2 BoxCollider::GetFurthestPoint() {
 	Vector2 localPos = Position(GameEntity::Local);
@@ -45,3 +48,5 @@ Vector2 BoxCollider::GetFurthestPoint() {
 Vector2 BoxCollider::GetVertexPos(int index) {
 	return mVerts[index]->Position();
 }
+
+

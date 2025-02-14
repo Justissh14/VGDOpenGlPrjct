@@ -4,6 +4,10 @@
 #include "InputManager.h"
 #include "Scoreboard.h"
 #include "Player.h"
+#include "Obstacle.h"
+
+
+
 
 
 using namespace SDLFramework;
@@ -20,10 +24,13 @@ private:
 	Texture* mBackDrop;
 	Texture* mTexture;
 	Texture* mTexture2;
+	Texture* mTexture3;
 
-	int mScore;
+	float mElapsedTime = 0.0f;
+
 
 	GameEntity* mGroundBar;
+	
 
 	Player* mPlayer;
 
@@ -32,11 +39,17 @@ private:
 
 	
 
+	
+	
+
 public:
-	int Score();
+	int mScore;
 
 	Background();
 	~Background();
+
+	float mTextureWidth;
+    float mTexture2Width;
 
 	void Update() override;
 	void Render() override;

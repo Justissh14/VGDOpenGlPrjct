@@ -5,206 +5,180 @@
 #include <thread>
 
 Player::Player() {
-	mTimer = Timer::Instance();
-	mInput = InputManager::Instance();
-	mAudio = AudioManager::Instance();
 
-	mVisible = true;
-	mAnimating = false;
-	mWasHit = false;
+    mTimer = Timer::Instance();
+    mInput = InputManager::Instance();
+    mAudio = AudioManager::Instance();
 
+    mVisible = true;
+    mAnimating = false;
+    mWasHit = false;
 
-	mScore = 0;
-	mLives = 2;
+    mScore = 0;
+    mLives = 3;
+    StartScoreCheck = 0;
 
-	mTexture = new GLTexture("JetPackMan.png", 0, 0, 60, 65);
-	mTexture->Parent(this);
-	mTexture->Position(-200.0f, -295.0f);
-	mTexture->Scale(Vector2(2.5f, 3.0f));
+    mTexturej = new GLTexture("JetPackMan.png", -45, 5, 35, 55);
+    mTexturej->Parent(this);
+    mTexturej->Position(Vector2(-200.0f, -280.0f));
+    mTexturej->Scale(Vector2(2.5f, 3.0f));
 
-	mMoveSpeed = 500.0f;
-	mMoveBoundsX = Vector2(0.0f + mTexture->ScaledDimensions().x / 2, Graphics::SCREEN_WIDTH - mTexture->ScaledDimensions().x / 2);
-	mMoveBoundsY = Vector2(0.0f + mTexture->ScaledDimensions().y / 2, maxY - mTexture->ScaledDimensions().y / 2);
+    mMoveSpeed = 500.0f;
+    mMoveBoundsX = Vector2(0.0f + mTexturej->ScaledDimensions().x / 2, Graphics::SCREEN_WIDTH - mTexturej->ScaledDimensions().x / 2);
+    mMoveBoundsY = Vector2(0.0f + mTexturej->ScaledDimensions().y / 2, maxY - mTexturej->ScaledDimensions().y / 2);
 
+    mDeathAnimation = new AnimatedGLTexture("PlayerExplosion.png", 0, 0, 128, 128, 4, 1.0f, Animation::Layouts::Horizontal);
+    mDeathAnimation->Parent(this);
+    mDeathAnimation->Position(Vector2(-200.0f, -295.0f));
+    mDeathAnimation->SetWrapMode(Animation::WrapModes::Once);
 
-	mDeathAnimation = new AnimatedGLTexture("PlayerExplosion.png", 0, 0, 128, 128, 4, 1.0f, Animation::Layouts::Horizontal);
-	mDeathAnimation->Parent(this);
-	mDeathAnimation->Position(Vec2_Zero);
-	mDeathAnimation->SetWrapMode(Animation::WrapModes::Once);
+    /*for (int i = 0; i < MAX_BULLETS; ++i) {
+        mBullets[i] = new Bullet(true);
+    }*/
 
-	for (int i = 0; i < MAX_BULLETS; ++i) {
-		mBullets[i] = new Bullet(true);
-	}
+    // Set up colliders with appropriate size
+    AddCollider(new BoxCollider(Vector2(35.0f, 55.0f))); // Main player collider, matches player texture size
+    AddCollider(new BoxCollider(Vector2(35.0f, 25.0f)), Vector2(18.0f, 10.0f)); // Body collider part 1
+    AddCollider(new BoxCollider(Vector2(35.0f, 25.0f)), Vector2(-18.0f, 10.0f)); // Body collider part 2
 
-	AddCollider(new BoxCollider(Vector2(16.0f, 67.0f)));
-	AddCollider(new BoxCollider(Vector2(20.0f, 37.0f)), Vector2(18.0f, 10.0f));
-	AddCollider(new BoxCollider(Vector2(20.0f, 37.0f)), Vector2(-18.0f, 10.0f));
-
-	mId = PhysicsManager::Instance()->RegisterEntity(this, PhysicsManager::CollisionLayers::Friendly);
-
-	
+    mId = PhysicsManager::Instance()->RegisterEntity(this, PhysicsManager::CollisionLayers::Friendly);
 }
 
 Player::~Player() {
-	mTimer = nullptr;
-	mInput = nullptr;
-	mAudio = nullptr;
+    mTimer = nullptr;
+    mInput = nullptr;
+    mAudio = nullptr;
 
-	delete mTexture;
-	mTexture = nullptr;
+    delete mTexturej;
+    mTexturej = nullptr;
 
-	delete mDeathAnimation;
-	mDeathAnimation = nullptr;
+    delete mJetFlames;
+    mJetFlames = nullptr;
 
-	for (auto b : mBullets) {
-		delete b;
-	}
+    delete mDeathAnimation;
+    mDeathAnimation = nullptr;
+
+    /*for (auto b : mBullets) {
+        delete b;
+    }*/
 }
- 
-
 
 void Player::HandleMovement() {
-	
-	
+    if (mInput->KeyPressed(SDL_SCANCODE_SPACE)) {
+        Translate(-Vec2_Up * 150.0f, World); // Jump
 
-	// Handle vertical movement (jumping)
-	
-	if (mInput->KeyPressed(SDL_SCANCODE_SPACE)) {
-		Translate(-Vec2_Up * 150.0f, World); // Jump up by 50 pixels
+        if (mInput->KeyPressed(SDL_SCANCODE_SPACE)) {
+            mAudio->PlayMusic("SFX/JetPack.mp3", -1);
+            mJetFlames = new GLTexture("JetFlames.png", 0, 0, 60, 45);
+            mJetFlames->Parent(this);
+            mJetFlames->Position(-225.0f, -170.0f);
+            mJetFlames->Scale(Vector2(0.5f, 2.0f));
+        }
+    }
+    if (mInput->KeyReleased(SDL_SCANCODE_SPACE)) {
+        Translate(Vec2_Up * 150.0f, World); // Fall
+        mAudio->PauseMusic();
+        delete mJetFlames;
+        mJetFlames = nullptr;
+    }
 
-		if (mInput->KeyPressed(SDL_SCANCODE_SPACE)) {
-			mAudio->PlayMusic("SFX/JetPack.mp3", -1);
-		}
-		
-		
-		
-	}
-	if (mInput->KeyReleased(SDL_SCANCODE_SPACE)) {
-		Translate(Vec2_Up * 150.0f, World); // Fall down by 10 pixels
-		mAudio->PauseMusic();
-	}
-	
-	
+    Vector2 pos = Position(Local);
+    if (pos.x < mMoveBoundsX.x) {
+        pos.x = mMoveBoundsX.x;
+    }
+    else if (pos.x > mMoveBoundsX.y) {
+        pos.x = mMoveBoundsX.y;
+    }
 
-	// Handle special action
-	if (mInput->KeyPressed(SDL_SCANCODE_X)) {
-		mAnimating = true;
-		mDeathAnimation->ResetAnimation();
-		// mAudio->PlaySFX("SFX/PlayerExplosion.wav");
-		mWasHit = true;
-	}
+    if (pos.y < mMoveBoundsY.x) {
+        pos.y = mMoveBoundsY.x;
+    }
+    else if (pos.y > mMoveBoundsY.y) {
+        pos.y = mMoveBoundsY.y;
+    }
 
-	// Boundary check for horizontal movement
-	Vector2 pos = Position(Local);
-	if (pos.x < mMoveBoundsX.x) {
-		pos.x = mMoveBoundsX.x;
-	}
-	else if (pos.x > mMoveBoundsX.y) {
-		pos.x = mMoveBoundsX.y;
-	}
-
-	// Boundary check for vertical movement
-	if (pos.y < mMoveBoundsY.x) {
-		pos.y = mMoveBoundsY.x;
-	}
-	else if (pos.y > mMoveBoundsY.y) {
-		pos.y = mMoveBoundsY.y;
-	}
-
-	Position(pos);
-
+    Position(pos);
 }
-
-
-
-
-
-
-//void Player::HandleFiring() {
-//	if (mInput->KeyPressed(SDL_SCANCODE_UP)) {
-//		for (int i = 0; i < MAX_BULLETS; ++i) {
-//			if (!mBullets[i]->Active()) {
-//				mBullets[i]->Fire(Position());
-//				mAudio->PlaySFX("SFX/Fire.wav");
-//				break;
-//			}
-//		}
-//	}
-//}
-
-//void Player::Visible(bool visible) {
-//	mVisible = visible;
-//}
 
 bool Player::IsAnimating() {
-	return mAnimating;
+    return mAnimating;
 }
 
-
 int Player::Score() {
-	return mScore;
+    return mScore;
 }
 
 int Player::Lives() {
-	return mLives;
+    return mLives;
 }
 
 void Player::AddScore(int change) {
-	mScore += change;
+    mScore += change;
 }
 
-bool Player::IgnoreCollisions()
-{
-	return !mVisible || mAnimating;
+bool Player::IgnoreCollisions() {
+    return !mVisible || mAnimating;
 }
 
-void Player::Hit(PhysEntity * other) {
-	mLives -= 1;
-	mAnimating = true;
-	mDeathAnimation->ResetAnimation();
-	mAudio->PlaySFX("SFX/PlayerExplosion.wav");
-	mWasHit = true;
+void Player::Hit(PhysEntity* other) {
+    mLives -= 1;
+    mAnimating = true;
+    mDeathAnimation->ResetAnimation();
+    mAudio->PlaySFX("SFX/PlayerDeath.mp3", 0, 1);
+    mWasHit = true;
 }
 
 bool Player::WasHit() {
-	return mWasHit;
+    return mWasHit;
 }
 
 void Player::Update() {
-	if (mAnimating) {
+    if (mAnimating) {
+        if (mWasHit) {
+            mWasHit = false;
 
-		if (mWasHit) {
-			mWasHit = false;
-		}
+        }
 
-		mDeathAnimation->Update();
-		mAnimating = mDeathAnimation->IsAnimating();
-	}
-	else {
-		if (Active()) {
-			HandleMovement();
-			/*HandleFiring();*/
-		}
-	}
+        mDeathAnimation->Update();
+        mAnimating = mDeathAnimation->IsAnimating();
+    }
+    else {
+        if (Active()) {
+            HandleMovement();
+        }
+    }
 
-	for (int i = 0; i < MAX_BULLETS; ++i) {
-		mBullets[i]->Update();
-	}
+    if (mVisible) {
+        if (mAnimating) {
+            mDeathAnimation->Render();
+        }
+        else {
+            mTexturej->Render();
+        }
+    }
+
+    /*for (int i = 0; i < MAX_BULLETS; ++i) {
+        mBullets[i]->Update();
+    }*/
 }
 
 void Player::Render() {
-	if (mVisible) {
-		if (mAnimating) {
-			mDeathAnimation->Render();
-		}
-		else {
-			mTexture->Render();
-		}
-	}
+    if (mVisible) {
+        if (mAnimating) {
+            mDeathAnimation->Render();
+        }
+        else {
+            mTexturej->Render();
+        }
+    }
 
-	for (int i = 0; i < MAX_BULLETS; ++i) {
-		mBullets[i]->Render();
-	}
+    if (mJetFlames) {
+        mJetFlames->Render();
+    }
 
-	PhysEntity::Render();
+    /*for (int i = 0; i < MAX_BULLETS; ++i) {
+        mBullets[i]->Render();
+    }*/
+
+    
 }

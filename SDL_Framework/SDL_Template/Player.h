@@ -1,65 +1,67 @@
 #ifndef __PLAYER_H
 #define __PLAYER_H
 #include "AnimatedGLTexture.h"
+
 #include "AudioManager.h"
 #include "InputManager.h"
 #include "Bullet.h"
+#include "BoxCollider.h"  
 
 using namespace SDLFramework;
 
 class Player : public PhysEntity {
 private:
-	Timer * mTimer;
-	InputManager * mInput;
-	AudioManager * mAudio;
+    Timer* mTimer;
+    InputManager* mInput;
+    AudioManager* mAudio;
 
-	bool mVisible;
-	bool mAnimating;
-	bool mWasHit;
-	
+    bool mVisible;
+    bool mAnimating;
+    bool mWasHit;
 
-	int mScore;
-	int mLives;
+    int mScore;
+    int mLives;
 
-	Texture * mTexture;
-	AnimatedGLTexture * mDeathAnimation;
+    Texture* mTexturej;
+    Texture* mJetFlames;
+    AnimatedGLTexture* mDeathAnimation;
 
-	float mMoveSpeed;
-	Vector2 mMoveBoundsX;
-	Vector2 mMoveBoundsY;
+    float mMoveSpeed;
+    Vector2 mMoveBoundsX;
+    Vector2 mMoveBoundsY;
 
-	float maxY = 1400.0f;
+    float maxY = 1400.0f;
 
-	
-	
-
-
-	static const int MAX_BULLETS = 2;
-	Bullet * mBullets[MAX_BULLETS];
+    // Collider and Bullet
+    BoxCollider* mCollider;
+    /*static const int MAX_BULLETS = 2;
+    Bullet* mBullets[MAX_BULLETS];*/
 
 private:
-	void HandleMovement();
-	/*void HandleFiring();*/
+    void HandleMovement();
 
 public:
-	Player();
-	~Player();
+    int StartScoreCheck;
 
-	/*void Visible(bool visible);*/
-	bool IsAnimating();
-	
-	int Score();
-	int Lives();
+    Player();
+    ~Player();
 
-	void AddScore(int change);
+    bool Visible();
+    void Visible(bool visible);
+    bool IsAnimating();
 
-	// Inherited from PhysEntity
-	bool IgnoreCollisions() override;
-	void Hit(PhysEntity * other) override;
-	
-	bool WasHit();
+    int Score();
+    int Lives();
 
-	void Update() override;
-	void Render() override;
+    void AddScore(int change);
+
+    // Inherited from PhysEntity
+    bool IgnoreCollisions() override;
+    void Hit(PhysEntity* other) override;
+
+    bool WasHit();
+
+    void Update() override;
+    void Render() override;
 };
 #endif

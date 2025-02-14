@@ -99,7 +99,7 @@ xcopy "$(ProjectDir)..\Data\*" "$(OutDir)Data\" /y /s</Command>
       <AdditionalIncludeDirectories>$(SolutionDir)Libraries\OpenGL\glm;$(SolutionDir)Libraries\OpenGL\glew\include;$(SolutionDir)Libraries\SDL2\SDL2\include;$(SolutionDir)Libraries\SDL2\SDL2_image\include;$(SolutionDir)Libraries\SDL2\SDL2_ttf\include;$(SolutionDir)Libraries\SDL2\SDL2_mixer\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)Libraries\OpenGL\glew\lib\Release\x64;$(SolutionDir)Libraries\SDL2\SDL2\lib\x64;$(SolutionDir)Libraries\SDL2\SDL2_image\lib\x64;$(SolutionDir)Libraries\SDL2\SDL2_ttf\lib\x64;$(SolutionDir)Libraries\SDL2\SDL2_mixer\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\SDL2\lib\x64;C:\SDL2_image\lib\x64;C:\SDL2_mixer\lib\x64;C:\SDL2_ttf\lib\x64;C:\glew\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
@@ -145,7 +145,7 @@ xcopy "$(ProjectDir)..\Data\*" "$(OutDir)Data\" /y /s</Command>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)Libraries\OpenGL\glew\lib\Release\x64;$(SolutionDir)Libraries\SDL2\SDL2\lib\x64;$(SolutionDir)Libraries\SDL2\SDL2_image\lib\x64;$(SolutionDir)Libraries\SDL2\SDL2_ttf\lib\x64;$(SolutionDir)Libraries\SDL2\SDL2_mixer\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\SDL2\lib\x64;C:\SDL2_image\lib\x64;C:\SDL2_mixer\lib\x64;C:\SDL2_ttf\lib\x64;C:\glew\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -173,6 +173,7 @@ xcopy "$(ProjectDir)..\Data\*" "$(OutDir)Data\" /y /s</Command>
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Obstacle.cpp" />
     <ClCompile Include="PhysEntity.cpp" />
     <ClCompile Include="PhysicsManager.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -204,6 +205,7 @@ xcopy "$(ProjectDir)..\Data\*" "$(OutDir)Data\" /y /s</Command>
     <ClInclude Include="BezierPath.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="MathHelper.h" />
+    <ClInclude Include="Obstacle.h" />
     <ClInclude Include="PhysEntity.h" />
     <ClInclude Include="PhysicsHelper.h" />
     <ClInclude Include="PhysicsManager.h" />

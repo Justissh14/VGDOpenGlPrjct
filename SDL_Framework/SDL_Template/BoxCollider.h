@@ -8,9 +8,12 @@ private:
 
 	GameEntity * mVerts[MAX_VERTS];
 
+
 	void AddVert(int index, Vector2 pos);
 
 public:
+
+
 	BoxCollider(Vector2 size);
 	~BoxCollider();
 

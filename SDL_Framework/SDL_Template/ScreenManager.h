@@ -7,6 +7,7 @@ class ScreenManager {
 private:
 	static ScreenManager * sInstance;
 
+
 	enum Screens { Start, Play };
 	Screens mCurrentScreen;
 
